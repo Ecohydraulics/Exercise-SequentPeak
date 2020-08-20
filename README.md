@@ -1,4 +1,7 @@
-### Python Programming in Water Resources Engineering and Research
+### Python Programming for Water Resources Engineering and Research
+
+![rhone](https://github.com/Ecohydraulics/media/raw/master/jpg/new_bullards_bar.jpg)
+*<sub>New Bullards Bar Dam in California, USA (source: Sebastian Schwindt 2017).</sub>*
 
 ***
 
@@ -6,7 +9,16 @@
 
 >	***Background***: Apply a sequent peak algorithm to a storage volume curve to derive the necessary size of a (planned) reservoir.
 
->   ***Goals***: Write custom functions, load data from comma-type delimited text files, and manipulate data with *numpy* and *pandas*. Use loops and error exceptions efficiently.
+>   ***Goals***: Write custom functions, load data from comma-type delimited text files, and manipulate data with *numpy*. Use loops and error exceptions efficiently.
+
+>   ***Requirements***: *Python* libraries: *numpy* including *scipy* and *matplotlib*. Read and understand the [data handling with *numpy*](https://hydro-informatics.github.io/hypy_pynum.html) and [functions](https://hydro-informatics.github.io/hypy_pyfun.html).
+
+Get ready by cloning the exercise repository:
+
+```
+git clone https://github.com/Ecohydraulics/Exercise-SequentPeak.git
+```
+
 
 ## Theory
 Seasonal storage reservoirs retain water during wet months (e.g., monsoon, or rainy winters in Mediterranean climates) to ensure sufficient drinking water and agricultural supply during dry months. For this purpose, enormous storage volumes are necessary, which often exceed 1,000,000 m³.
