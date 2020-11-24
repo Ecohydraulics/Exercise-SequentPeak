@@ -23,8 +23,6 @@ git clone https://github.com/Ecohydraulics/Exercise-SequentPeak.git
 ## Theory
 Seasonal storage reservoirs retain water during wet months (e.g., monsoon, or rainy winters in Mediterranean climates) to ensure sufficient drinking water and agricultural supply during dry months. For this purpose, enormous storage volumes are necessary, which often exceed 1,000,000 m³.
 
-![newbullards](https://github.com/Ecohydraulics/media/raw/master/jpg/new_bullards_bar.jpg)
-
 The necessary storage volume is determined from historical inflow measurements and target discharge volumes (e.g., agriculture, drinking water, hydropower, or ecological residual water quantities).
 The sequent peak algorithm (e.g., [Potter 1977](https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1752-1688.1977.tb05564.x) based on [Rippl 1883](https://doi.org/10.1680/imotp.1883.21797)) is a decades-old procedure for determining the necessary seasonal storage volume based on a storage volume curve (***SD curve***). The below figure shows an exemplary *SD* curve with volume peaks (local maxima) approximately every 6 months and local volume minima between the peaks. The volume between the last local maximum and the lowest following local minimum determines the required storage volume (see the bright-blue line in the figure).
 
@@ -131,7 +129,7 @@ Running the script returns the `numpy.array` of daily average flows for the year
 
 The sequent peak algorithm takes monthly flow volumes, which corresponds to the sum of daily average discharge multiplied with the duration of one day (e.g, 11.0 m³/s · 24 h/d · 3600 s/h). Reading the flow data as above shown results in annual flow tables (average daily flows in m³/s) with the `numpy.array`s of the shape 31x12 arrays (matrices) for every year. We want to get the column sums and multiply the sum with 24 h/d · 3600 s/h. Because the monthly volumes are in the order of million cubic meters (CMS), dividing the monthly sums by `10**6` will simplify the representation of numbers.
 
-Write a function (e.g., `def daily2monthly(daily_flow_series)`) to perform the conversion of daily average flow series to monthly volumes in 10<sup6</sup>m³:
+Write a function (e.g., `def daily2monthly(daily_flow_series)`) to perform the conversion of daily average flow series to monthly volumes in 10<sup>6</sup>m³:
 
 1. The function should be called for every dictionary entry (year) of the data series. Therefore, the input argument `daily_flow_series` should be a `numpy.array` with the shape being `(31, 12)`. 
 1. To get column-wise (monthly) statistics, transpose the input array:<br>`daily_flow_series = np.transpose(daily_flow_series)`
