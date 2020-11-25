@@ -21,7 +21,7 @@ git clone https://github.com/Ecohydraulics/Exercise-SequentPeak.git
 
 
 ## Theory
-Seasonal storage reservoirs retain water during wet months (e.g., monsoon, or rainy winters in Mediterranean climates) to ensure sufficient drinking water and agricultural supply during dry months. For this purpose, enormous storage volumes are necessary, which often exceed 1,000,000 m³.
+Seasonal storage reservoirs retain water during wet months (e.g., monsoon, or rainy winters in Mediterranean climates) to ensure sufficient drinking water and agricultural supply during dry months. For this purpose, enormous storage volumes are necessary, which often exceed 1,000,000 m<sup>3</sup>.
 
 The necessary storage volume is determined from historical inflow measurements and target discharge volumes (e.g., agriculture, drinking water, hydropower, or ecological residual water quantities).
 The sequent peak algorithm (e.g., [Potter 1977](https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1752-1688.1977.tb05564.x) based on [Rippl 1883](https://doi.org/10.1680/imotp.1883.21797)) is a decades-old procedure for determining the necessary seasonal storage volume based on a storage volume curve (***SD curve***). The below figure shows an exemplary *SD* curve with volume peaks (local maxima) approximately every 6 months and local volume minima between the peaks. The volume between the last local maximum and the lowest following local minimum determines the required storage volume (see the bright-blue line in the figure).
@@ -55,14 +55,14 @@ The function will loop over the *csv* file names and append the file contents to
     * Generate a key for `file_content_dict`:
         - Detach the file name from the `file` (directory + file name + file ending `ftype`) with `raw_file_name = file.split("/")[-1].split("\\")[-1].split(".csv")[0]`
         - Strip the user-defined `fn_prefix` and `fn_suffix` *strings* from the raw file name and use a `try:` statement to convert the remaining characters to a numeric value: `int(raw_file_name.strip(fn_prefix).strip(fn_suffix))`
-        - *Note: We will use later on `fn_prefix="daily_flows_` and `fn_suffix=""` to turn the year contained in the *csv* file names to the key in `file_content_dict`.
+        - *Note*: We will use later on `fn_prefix="daily_flows_` and `fn_suffix=""` to turn the year contained in the *csv* file names to the key in `file_content_dict`.
         - Use `except ValueError:` in the case that the remaining *string* cannot be converted to `int`: `dict_key = raw_file_name.strip(fn_prefix).strip(fn_suffix)` (if everything is well coded, the script will not need to jump into this exception statement later).
     * Open the `file` (full directory) as a file: `with open(file, mode="r") as f:`
         - Read the file content with `f_content = f.read()`. The *string*  variable `f_content` will look similar to something like `";0;0;0;0;0;0;0;0;0;2.1;0;0\n;0;0;0;0;0;0;0;0;0;6.4;0;0\n;0;0;0;0;9.9;0;0;0;0;0.2;0;0\n..."`.
         - *Some explanations: The column data are delimited by a `";"` and every column represents one value per month (i.e., 12 values per row). The rows denote days (i.e., there are 31 rows in each file corresponding to the maximum number of days in one month of a year). In consequence, every row should contain 11 `";"` signs to separate 12 columns and the entire file (`f_content`) should contain 30 `"\n"` signs to separate 31 rows. However, we count 12 `";"` signs per row and 32 to 33 `"\n"` signs in `f_content` because the data logger wrote `";"` at the beginning of each row and added one to two more empty lines to the end of every file. Therefore, we need to `strip()` the bad `";"` and  `"\n"` signs in the following.*
         - To get the number of (valid) rows in every file use `rows = f_content.strip("\n").split("\n").__len__()`
         - To get the number of (valid) columns in every file use `cols = f_content.strip("\n").split("\n")[0].strip(delimiter).split(delimiter).__len__()`
-        - Now we can create a void *numpy* array of the size (shape) corresponding to the number of valid rows and columns in every file: `data_array = np.empty((rows, cols), dtype=np.float32)`
+        - Now we can create a void *numpy* array of the size (shape) corresponding to the number of valid rows and columns in every file: `data_array = np.ones((rows, cols)) * np.nan`
         - *Why are we not using directly `np.empty((31, 12))` even though the shape of all files is the same?<br>We want to write a generally valid function and the two lines for deriving the valid number of rows and columns do the generalization job.*
         - Next, we need to parse the values of every line and append them to the until now void `data_array`. Therefore, we split `f_content` into its lines with `split("\n)` and use a *for* loop: `for iteration, line in enumerate(f_content.strip("\n").split("\n")):`. Then,<br> Create an empty list to store line data `line_data = []`. <br>In another *for* loop, strip and split the line by the user-defined `delimiter` (recall: we will use `delimiter=";"`) `for e in line.strip(delimiter).split(delimiter):`. In the *e-for* loop, `try:` to append `e` as a *float* number `line_data.append(np.float(e))` and use `except ValueError:` to `line_data.append(np.nan)` (i.e., append a not-a-number value that we will need because not all months have 31 days).<br>End the *e-for* loop by back-indenting to the `for iteration, line in ...` loop and appending the `line_data` *list* as a *numpy* array to `data_array`: `data_array[iteration] = np.array(line_data)`
         - Back in the `with open(file, ...` statement (use correct indentation level!), update `file_content_dict` with the above-found `dict_key` and the `data_array` of the `file as f`: `file_content_dict.update({dict_key: data_array})`
@@ -82,7 +82,7 @@ def read_data(directory="", fn_prefix="", fn_suffix="", ftype="csv", delimiter="
 
 if __name__ == "__main__":
     # LOAD DATA
-    file_directory = os.path.abspath("") + "\\flows\\"
+    file_directory = os.path.abspath("") + "/flows/"
     daily_flow_dict = read_data(directory=file_directory, ftype="csv",
                                 fn_prefix="daily_flows_", fn_suffix="",
                                 delimiter=";")
@@ -127,9 +127,9 @@ Running the script returns the `numpy.array` of daily average flows for the year
 
 ### Convert daily flows to monthly volumes
 
-The sequent peak algorithm takes monthly flow volumes, which corresponds to the sum of daily average discharge multiplied with the duration of one day (e.g, 11.0 m³/s · 24 h/d · 3600 s/h). Reading the flow data as above shown results in annual flow tables (average daily flows in m³/s) with the `numpy.array`s of the shape 31x12 arrays (matrices) for every year. We want to get the column sums and multiply the sum with 24 h/d · 3600 s/h. Because the monthly volumes are in the order of million cubic meters (CMS), dividing the monthly sums by `10**6` will simplify the representation of numbers.
+The sequent peak algorithm takes monthly flow volumes, which corresponds to the sum of daily average discharge multiplied with the duration of one day (e.g, 11.0 m<sup>3</sup>/s · 24 h/d · 3600 s/h). Reading the flow data as above shown results in annual flow tables (average daily flows in m<sup>3</sup>/s) with the `numpy.array`s of the shape 31x12 arrays (matrices) for every year. We want to get the column sums and multiply the sum with 24 h/d · 3600 s/h. Because the monthly volumes are in the order of million cubic meters (CMS), dividing the monthly sums by `10**6` will simplify the representation of numbers.
 
-Write a function (e.g., `def daily2monthly(daily_flow_series)`) to perform the conversion of daily average flow series to monthly volumes in 10<sup>6</sup>m³:
+Write a function (e.g., `def daily2monthly(daily_flow_series)`) to perform the conversion of daily average flow series to monthly volumes in 10<sup>6</sup>m<sup>3</sup>:
 
 1. The function should be called for every dictionary entry (year) of the data series. Therefore, the input argument `daily_flow_series` should be a `numpy.array` with the shape being `(31, 12)`. 
 1. To get column-wise (monthly) statistics, transpose the input array:<br>`daily_flow_series = np.transpose(daily_flow_series)`
@@ -162,11 +162,11 @@ if __name__ == "__main__":
 
 ## Sequent peak algorithm
 
-With the above routines for reading the flow data, we derived monthly inflow volumes ***In<sub>m</sub>*** in million m³ (stored in `monthly_vol_dict`). For irrigation and drinking water supply, Vanilla-arid country wants to withdraw the following annual volume from the reservoir:
+With the above routines for reading the flow data, we derived monthly inflow volumes ***In<sub>m</sub>*** in million m<sup>3</sup> (stored in `monthly_vol_dict`). For irrigation and drinking water supply, Vanilla-arid country wants to withdraw the following annual volume from the reservoir:
 
 | ***Month***    | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
 |----------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| ***Vol.*** (10<sup>6</sup> m³) | 1.5 | 1.5 | 1.5 | 2   | 4   | 4   | 4   | 5   | 5   | 3   | 2   | 1.5 |
+| ***Vol.*** (10<sup>6</sup> m<sup>3</sup>) | 1.5 | 1.5 | 1.5 | 2   | 4   | 4   | 4   | 5   | 5   | 3   | 2   | 1.5 |
 
 Following the scheme of inflow volumes we can create a `numpy.array` for the monthly outflow volumes ***Out<sub>m</sub>***.<br>
 `monthly_supply = np.array([1.5, 1.5, 1.5, 2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 3.0, 2.0, 1.5])`
