@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def plot_storage_curve(array_1d, min_indices, max_indices, min_values, max_values):
     """
     Plots SD_line (1d-numpy array) and markers of local maxima and minima
