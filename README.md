@@ -1,6 +1,6 @@
 ### Python Programming for Water Resources Engineering and Research
 
-![rhone](https://github.com/Ecohydraulics/media/raw/master/jpg/new_bullards_bar.jpg)
+![rhone](https://github.com/Ecohydraulics/media/raw/main/jpg/new_bullards_bar.jpg)
 *<sub>New Bullards Bar Dam in California, USA (source: Sebastian Schwindt 2017).</sub>*
 
 ***
@@ -26,7 +26,7 @@ Seasonal storage reservoirs retain water during wet months (e.g., monsoon, or ra
 The necessary storage volume is determined from historical inflow measurements and target discharge volumes (e.g., agriculture, drinking water, hydropower, or ecological residual water quantities).
 The sequent peak algorithm (e.g., [Potter 1977](https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1752-1688.1977.tb05564.x) based on [Rippl 1883](https://doi.org/10.1680/imotp.1883.21797)) is a decades-old procedure for determining the necessary seasonal storage volume based on a storage volume curve (***SD curve***). The below figure shows an exemplary *SD* curve with volume peaks (local maxima) approximately every 6 months and local volume minima between the peaks. The volume between the last local maximum and the lowest following local minimum determines the required storage volume (see the bright-blue line in the figure).
 
-![sequentpeak](https://github.com/Ecohydraulics/media/raw/master/png/sequent_peak.png)
+![sequentpeak](https://github.com/Ecohydraulics/media/raw/main/png/sequent_peak.png)
 
 The sequent peak algorithm repeats this calculation over multiple years and the highest volume observed determines the required volume.
 
@@ -35,7 +35,7 @@ In this exercise, we use daily flow measurements from Vanilla River (in Vanilla-
 
 ## Pre-processing of flow data
 
-The daily flow data of the Vanilla River are available from 1979 through 2001 in the form of `.csv` files ([`flows` folder](https://github.com/Ecohydraulics/Exercise-SequentPeak/tree/master/flows)).
+The daily flow data of the Vanilla River are available from 1979 through 2001 in the form of `.csv` files ([`flows` folder](https://github.com/Ecohydraulics/Exercise-SequentPeak/tree/main/flows)).
 
 ### Write a function to read flow data
 
@@ -219,9 +219,9 @@ The new `def sequent_peak(in_vol_series, out_vol_target):` function needs to:
     `seas_max_vol = np.take(storage_line, seas_max_index)` <br>
     `seas_min_vol = np.take(storage_line, seas_min_index)` <br>
     1. Write two functions, which consecutively find local maxima and then local minima located between the extrema (HOMEWORK!) OR use `from scipy.signal import find_peaks` to find the indices (positions) - consider to write a `find_seasonal_extrema(storage_line)` function.
-* Verify if the curves and extrema are correct by copying the provided `plot_storage_curve` curve to your script ([available in the exercise repository](https://github.com/Ecohydraulics/Exercise-SequentPeak/blob/master/plot_function.py)) and using it as follows:<br>`plot_storage_curve(storage_line, seas_min_index, seas_max_index, seas_min_vol, seas_max_vol)`
+* Verify if the curves and extrema are correct by copying the provided `plot_storage_curve` curve to your script ([available in the exercise repository](https://github.com/Ecohydraulics/Exercise-SequentPeak/blob/main/plot_function.py)) and using it as follows:<br>`plot_storage_curve(storage_line, seas_min_index, seas_max_index, seas_min_vol, seas_max_vol)`
 
-![SDline](https://github.com/Ecohydraulics/media/raw/master/png/storage_curve.png) 
+![SDline](https://github.com/Ecohydraulics/media/raw/main/png/storage_curve.png) 
 
 ### Calculate the required storage volume
 
